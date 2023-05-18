@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lucflix.model.Movie
 
-class MainAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<MainAdapter.MovieViewHolder>(){
+// Aqui é lista HORIZONTAL
+class MovieAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.movie_item,parent,false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.movie_item, parent, false)
         return MovieViewHolder(view)
     }
 
@@ -24,10 +24,11 @@ class MainAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<MainAd
         return movies.size
     }
 
-    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        fun bind(movie: Movie){
+    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(movie: Movie) {
             val imageCover: ImageView = itemView.findViewById(R.id.img_cover)
             imageCover.setImageResource(movie.coverUrl)
         }
     }
+
 }
