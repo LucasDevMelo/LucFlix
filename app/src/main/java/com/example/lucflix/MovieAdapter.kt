@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView.OnItemClickListener
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,8 @@ import com.squareup.picasso.Picasso
 
 // Aqui é lista HORIZONTAL
 class MovieAdapter(private val movies: List<Movie>,
-    @LayoutRes private val layoutID: Int
+    @LayoutRes private val layoutID: Int,
+    private val onItemClickListener: ( (Int)-> Unit )? = null
     ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
@@ -33,9 +35,14 @@ class MovieAdapter(private val movies: List<Movie>,
     inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(movie: Movie) {
             val imageCover: ImageView = itemView.findViewById(R.id.img_cover)
+            imageCover.setOnClickListener{
+                onItemClickListener?.invoke(movie.id)
+            }
+
+
 //            Adicionar as imagens usando framework
 //            Picasso.get().load(movie.coverUrl).into(imageCover)
-
+            //Outro método(mais complicado e menos utilizado)
             DownloadImageTask(object : DownloadImageTask.Callback{
                 override fun onResult(bitmap: Bitmap) {
                     imageCover.setImageBitmap(bitmap)

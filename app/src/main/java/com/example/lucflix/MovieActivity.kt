@@ -3,15 +3,21 @@ package com.example.lucflix
 import android.graphics.drawable.LayerDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lucflix.model.Movie
+import com.example.lucflix.model.MovieDetail
+import com.example.lucflix.util.MovieTask
+import java.lang.IllegalStateException
 
-class MovieActivity : AppCompatActivity() {
+class MovieActivity : AppCompatActivity(), MovieTask.Callback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,12 +25,18 @@ class MovieActivity : AppCompatActivity() {
 
         val txtTitle: TextView = findViewById(R.id.movie_txt_title)
         val txtDesc: TextView = findViewById(R.id.movie_txt_desc)
-        val txtcast: TextView = findViewById(R.id.movie_txt_cast)
+        val txtCast: TextView = findViewById(R.id.movie_txt_cast)
         val rv: RecyclerView = findViewById(R.id.movie_rv_similar)
+
+        val id = intent?.getIntExtra("id", 0) ?: throw IllegalStateException("ID não foi encontrado!")
+
+        val url = "https://api.tiagoaguiar.co/netflixapp/movie/$id?apiKey=714b3b95-2ad1-4461-99b8-864f68bf4f49"
+
+        MovieTask(this).execute(url)
 
         txtTitle.text = "Batman Begins"
         txtDesc.text = "Essa é a descrição do filme do Batman"
-        txtcast.text = getString(R.string.cast, "Ator A, ator B, ator C")
+        txtCast.text = getString(R.string.cast, "Ator A, Ator B, Atriz A, Atriz B")
 
         val movies = mutableListOf<Movie>()
 
@@ -36,16 +48,32 @@ class MovieActivity : AppCompatActivity() {
 
         supportActionBar?.setHomeAsUpIndicator(R.drawable.baseline_arrow_back_24)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = null
 
-        //Buscar o desenhavel(layer-list)
         val layerDrawable: LayerDrawable = ContextCompat.getDrawable(this, R.drawable.shadows) as LayerDrawable
-        //Buscar o filme
         val movieCover = ContextCompat.getDrawable(this, R.drawable.movie_4)
-        //atribuir a esse layer-list o novo filme
         layerDrawable.setDrawableByLayerId(R.id.cover_drawable, movieCover)
-        //set imageview
         val coverImg: ImageView = findViewById(R.id.movie_img)
         coverImg.setImageDrawable(layerDrawable)
+    }
+
+    override fun onPreExecute() {
 
     }
+
+    override fun onFailure(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onResult(movieDetail: MovieDetail) {
+        Log.i("Teste", movieDetail.toString())
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 }
