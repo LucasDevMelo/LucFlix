@@ -98,7 +98,7 @@ class MovieTask(private val callback: Callback) {
         val title = json.getString("title")
         val desc = json.getString("desc")
         val cast = json.getString("cast")
-        val coverUrl = json.getString("cover_utl")
+        val coverUrl = json.getString("cover_url")
         val jsonMovies = json.getJSONArray("movie")
 
         val similars = mutableListOf<Movie>()
